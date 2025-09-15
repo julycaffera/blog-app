@@ -4,7 +4,7 @@ A simple blog application built with Next.js, TypeScript, and Prisma. This app a
 
 ## Getting Started
 
-First, install dependencies:
+### 1. Install dependencies
 
 ```bash
 npm install
@@ -14,7 +14,7 @@ yarn install
 pnpm install
 ```
 
-Second, create the database:
+### 2. Set up the database
 
 ```bash
 npm run db:push
@@ -24,7 +24,7 @@ yarn db:push
 pnpm db:push
 ```
 
-Then, seed the database:
+### 3. Populate with sample data
 
 ```bash
 npm run db:seed
@@ -34,7 +34,7 @@ yarn db:seed
 pnpm db:seed
 ```
 
-Then, run the project:
+### 4. Start the development server
 
 ```bash
 npm run dev
