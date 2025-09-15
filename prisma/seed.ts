@@ -5,12 +5,10 @@ const prisma = new PrismaClient();
 async function seedUsers() {
   console.log('Seeding users...');
   
-  // Fetch users from API
   const usersResponse = await fetch('https://jsonplaceholder.typicode.com/users');
   const users = await usersResponse.json();
   
   for (const user of users) {
-    // Create Geo first (or find existing)
     let geoId;
     if (user.address?.geo) {
       const geo = await prisma.geo.upsert({
@@ -29,7 +27,6 @@ async function seedUsers() {
       geoId = geo.id;
     }
 
-    // Create Address (or find existing)
     let addressId;
     if (user.address && geoId) {
       const address = await prisma.address.upsert({
@@ -52,7 +49,6 @@ async function seedUsers() {
       addressId = address.id;
     }
 
-    // Create Company (or find existing)
     let companyId;
     if (user.company) {
       const company = await prisma.company.upsert({
@@ -67,7 +63,6 @@ async function seedUsers() {
       companyId = company.id;
     }
 
-    // Create User (or find existing)
     await prisma.user.upsert({
       where: { id: user.id },
       update: {},
@@ -90,7 +85,6 @@ async function seedUsers() {
 async function seedPosts() {
   console.log('Seeding posts...');
   
-  // Fetch posts from API
   const postsResponse = await fetch('https://jsonplaceholder.typicode.com/posts');
   const posts = await postsResponse.json();
 
@@ -114,7 +108,6 @@ async function main() {
   try {
     console.log('Starting database seeding...');
     
-    // Seed data (upsert will handle existing data)
     await seedUsers();
     await seedPosts();
     

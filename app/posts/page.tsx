@@ -85,7 +85,6 @@ export default function PostsPage() {
           />
         )}
 
-        {/* Pagination Section - Separated from posts list */}
         {!postsLoading && pagination.totalPages > 1 && (
           <div className="mt-8">
             <Pagination
