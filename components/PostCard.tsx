@@ -1,4 +1,5 @@
 import { Post } from "@/types";
+import { TrashIcon } from '@heroicons/react/24/outline';
 
 interface PostCardProps {
   post: Post;
@@ -21,8 +22,9 @@ export default function PostCard({ post, onDeleteClick }: PostCardProps) {
           </p>
           <button
             onClick={() => onDeleteClick(post)}
-            className="px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors duration-200 cursor-pointer"
+            className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition-colors duration-200 cursor-pointer"
           >
+            <TrashIcon className="h-4 w-4" />
             Delete
           </button>
         </div>

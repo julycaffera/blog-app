@@ -1,3 +1,5 @@
+import { UserIcon } from '@heroicons/react/24/outline';
+
 interface User {
   id: number;
   name: string;
@@ -12,7 +14,8 @@ interface UserFilterProps {
 export default function UserFilter({ users, selectedUserId, onUserChange }: UserFilterProps) {
   return (
     <div className="mb-6">
-      <label htmlFor="user-filter" className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor="user-filter" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+        <UserIcon className="h-4 w-4" />
         Filter by Author:
       </label>
       <select
