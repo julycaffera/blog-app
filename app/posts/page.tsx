@@ -16,7 +16,7 @@ export default function PostsPage() {
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   const {
     posts,
     loading: postsLoading,
@@ -50,7 +50,7 @@ export default function PostsPage() {
 
     setIsDeleting(true);
     setDeleteError(null);
-    
+
     const result = await deletePost(postToDelete.id);
     if (result.success) {
       setDeleteModalOpen(false);
@@ -67,7 +67,7 @@ export default function PostsPage() {
 
     setIsDeleting(true);
     setDeleteError(null);
-    
+
     const result = await retryDeletePost(postToDelete.id);
     if (result.success) {
       setDeleteModalOpen(false);
@@ -80,7 +80,7 @@ export default function PostsPage() {
   };
 
   const loading = postsLoading || usersLoading;
-  const error = postsError || usersError; // Only show fetch errors on main page, delete errors stay in modal
+  const error = postsError || usersError;
 
   if (loading && posts.length === 0) {
     return <LoadingSpinner />;
@@ -91,15 +91,15 @@ export default function PostsPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Blog Posts</h1>
-          
+
           <UserFilter
             users={users}
             selectedUserId={selectedUserId}
             onUserChange={handleUserFilter}
           />
 
-          {error && <ErrorMessage 
-            message={error} 
+          {error && <ErrorMessage
+            message={error}
             onClose={() => {
               if (postsError) setPostsError("");
               if (usersError) setUsersError("");
