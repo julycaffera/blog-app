@@ -14,6 +14,8 @@ import Pagination from "@/components/Pagination";
 export default function PostsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const {
     posts,
@@ -26,6 +28,8 @@ export default function PostsPage() {
     handlePageChange,
     deletePost,
     setError: setPostsError,
+    retryFetchPosts,
+    retryDeletePost,
   } = usePosts();
 
   const {
@@ -37,21 +41,46 @@ export default function PostsPage() {
 
   const handleDeleteClick = (post: Post) => {
     setPostToDelete(post);
+    setDeleteError(null);
     setDeleteModalOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
     if (!postToDelete) return;
 
+    setIsDeleting(true);
+    setDeleteError(null);
+    
     const result = await deletePost(postToDelete.id);
     if (result.success) {
       setDeleteModalOpen(false);
       setPostToDelete(null);
+      setDeleteError(null);
+    } else {
+      setDeleteError(result.error || "Failed to delete post. Please try again.");
     }
+    setIsDeleting(false);
+  };
+
+  const handleRetryDelete = async () => {
+    if (!postToDelete) return;
+
+    setIsDeleting(true);
+    setDeleteError(null);
+    
+    const result = await retryDeletePost(postToDelete.id);
+    if (result.success) {
+      setDeleteModalOpen(false);
+      setPostToDelete(null);
+      setDeleteError(null);
+    } else {
+      setDeleteError(result.error || "Failed to delete post. Please try again.");
+    }
+    setIsDeleting(false);
   };
 
   const loading = postsLoading || usersLoading;
-  const error = postsError || usersError;
+  const error = postsError || usersError; // Only show fetch errors on main page, delete errors stay in modal
 
   if (loading && posts.length === 0) {
     return <LoadingSpinner />;
@@ -69,10 +98,15 @@ export default function PostsPage() {
             onUserChange={handleUserFilter}
           />
 
-          {error && <ErrorMessage message={error} onClose={() => {
-            if (postsError) setPostsError("");
-            if (usersError) setUsersError("");
-          }} />}
+          {error && <ErrorMessage 
+            message={error} 
+            onClose={() => {
+              if (postsError) setPostsError("");
+              if (usersError) setUsersError("");
+            }}
+            onRetry={postsError ? retryFetchPosts : undefined}
+            showRetry={!!postsError}
+          />}
         </div>
 
         {postsLoading && posts.length === 0 ? (
@@ -100,9 +134,13 @@ export default function PostsPage() {
           onClose={() => {
             setDeleteModalOpen(false);
             setPostToDelete(null);
+            setDeleteError(null);
           }}
           onConfirm={handleDeleteConfirm}
+          onRetry={handleRetryDelete}
           postTitle={postToDelete?.title || ""}
+          error={deleteError || undefined}
+          isDeleting={isDeleting}
         />
       </div>
     </div>

@@ -75,20 +75,31 @@ export function usePosts() {
         body: JSON.stringify({ id }),
       });
 
-      if (!res.ok) throw new Error("Failed to delete post");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to delete post");
+      }
 
       setPosts(posts.filter((p) => p.id !== id));
-      return { success: true };
+      return { success: true, error: null };
     } catch (err) {
-      setError("Error deleting post. Please try again.");
+      const errorMessage = err instanceof Error ? err.message : "Error deleting post. Please try again.";
       console.error("Error deleting post:", err);
-      return { success: false };
+      return { success: false, error: errorMessage };
     }
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const retryFetchPosts = () => {
+    fetchPosts(selectedUserId || undefined, currentPage);
+  };
+
+  const retryDeletePost = async (id: number) => {
+    return await deletePost(id);
+  };
 
   return {
     posts,
@@ -101,5 +112,7 @@ export function usePosts() {
     handlePageChange,
     deletePost,
     setError,
+    retryFetchPosts,
+    retryDeletePost,
   };
 }
